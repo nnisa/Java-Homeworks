@@ -1,0 +1,43 @@
+public class HW5Driver
+{
+    
+    public static void main(String[] args)
+    {
+        Roster testcourse = new Roster("test");
+        testcourse.addStudent(new Student("Tarek","Al-Hariri","thariri"));
+        testcourse.addStudent(new Student("Ali","Naqi","anaqi"));
+        testcourse.addStudent(new Student("Noshin","Nisa","nnisa"));         
+        testcourse.addStudent(new Student("Abdelrahman","Haroun","aharoun"));
+        System.out.println("Initial course list");
+        System.out.println(testcourse);
+        testcourse.sortStudents();  // sorting by last name, then first name
+        System.out.println("Sorted by last name/first name");
+        System.out.println(testcourse);
+        testcourse.sortByIDComparator();  // sorting by andrewID using comparator
+        System.out.println("Sorted by ID w/comparator");
+        System.out.println(testcourse);
+        testcourse.sortStudents();  // sorting by last name, then first name
+        System.out.println("Sorted by last name/first name");
+        System.out.println(testcourse);
+        testcourse.sortByID();  // sorting by andrewID using radix sort
+        System.out.println("Sorted by ID w/radix");
+        System.out.println(testcourse);
+        
+        // once the above works, try it on the data file...
+        Roster course = new Roster("15-121w", "rosterfile.txt");
+        System.out.println("Initial course list");
+        System.out.println(course);
+        course.sortStudents();  // sorting by last name, then first name
+        System.out.println("Sorted by last name/first name");
+        System.out.println(course);
+        course.sortByIDComparator();  // sorting by andrewID using comparator
+        System.out.println("Sorted by ID w/comparator");
+        System.out.println(course);
+        course.sortStudents();  // sorting by last name, then first name
+        System.out.println("Sorted by last name/first name");
+        System.out.println(course);
+        course.sortByID();  // sorting by andrewID using radix sort
+        System.out.println("Sorted by ID w/radix");
+        System.out.println(course); 
+    }
+}

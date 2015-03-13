@@ -1,0 +1,288 @@
+
+/**Noshin Anjum Nisa
+  * nnisa
+  * hours worked : 10 hours
+  * 
+  * */
+import java.util.*;
+
+public class BST<AnyType extends Comparable<AnyType>>
+{
+    private TreeNode root;
+    
+    public BST()
+    {
+        root = null;
+    }
+    
+    public boolean isEmpty()
+    {
+        return root == null;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    public int helperHeight(TreeNode root)
+    {
+      if (root == null)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1 + (Math.max(height(root.left)+1, height(root.right)+1));
+      }        
+    }      
+    ////////////////////////////////////////////////////////////////////////////////////////////  
+    public int height(TreeNode root)
+    {
+      if (root == null || (root.left== null && root.right == null) )
+      {
+        return 0;
+      }
+      else
+      {
+        return (Math.max(helperHeight(root.left), helperHeight(root.right)));
+      }        
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    public boolean isBalanced(TreeNode root)
+    { 
+      if (helperHeight(root.left) - helperHeight(root.right) >= 1 || helperHeight(root.right)-helperHeight(root.left) >= 1)
+      return false;
+      return true;
+    } 
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    public void add(AnyType sorted, AnyType original)
+    {
+      if (contains(sorted) == false)
+      {
+        add(sorted);
+      }
+      
+      {
+        helperAdd(sorted, original);     
+      }
+    }
+    
+   ////////////////////////////////////////////////////////////////////////////////////////////
+    public void helperAdd(AnyType sorted, AnyType original)
+    {
+      TreeNode curr = root;
+      while (curr != null)
+      {
+        if (sorted.compareTo(curr.data) == 0)
+          curr.wordList.add(original);
+        if (sorted.compareTo(curr.data) > 0)
+          curr = curr.right;
+        else
+          curr = curr.left;
+       }
+    }
+    
+   ////////////////////////////////////////////////////////////////////////////////////////////
+    public ArrayList<AnyType> find(AnyType value)     //////////////////////////
+    {
+      TreeNode curr = root;
+      while (curr != null)
+      {
+        if (value.compareTo(curr.data) == 0)
+          return curr.wordList;
+        if (value.compareTo(curr.data) > 0)
+          curr = curr.right;
+        else
+          curr = curr.left;
+      }
+      return null;
+    }
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    // a better, more compact, add method
+    public void add_alt(AnyType value)
+    {
+        // important idiom -->  x = changed(x);
+        root = addHelper2(root,value);
+    }
+    
+    private TreeNode addHelper2(TreeNode rt, AnyType value)
+    {
+        if (rt == null)
+            return new TreeNode(value,null,null);
+        
+        if (value.compareTo(rt.data) > 0)
+            rt.right = addHelper2(rt.right,value);
+        else if (value.compareTo(rt.data) < 0)
+            rt.left = addHelper2(rt.left,value);
+        else
+            throw new IllegalStateException("duplicate value " + value);
+        
+        return rt;  // have to return the unchanged ones too, since
+        // you're (re-)assigning all the way back up the call stack!
+    }
+    
+    // the initial add we wrote in class, by "peeking" at the state ahead of us...
+    public void add(AnyType value)
+    {
+        if (root == null)
+            root = new TreeNode(value,null,null);
+        else
+            addHelper(root,value);        
+    }
+    
+    private void addHelper(TreeNode rt, AnyType value)
+    {
+        if (value.compareTo(rt.data) > 0)
+        {
+            if (rt.right == null)
+            {
+                rt.right = new TreeNode(value,null,null);
+            }
+            else
+            {
+                addHelper(rt.right,value);
+            }
+        } else if (value.compareTo(rt.data) < 0)
+        {
+            if (rt.left == null)
+            {
+                rt.left = new TreeNode(value,null,null);
+            }
+            else
+            {
+                addHelper(rt.left,value);
+            }
+        } else
+            throw new IllegalStateException("duplicate value " + value);
+    }
+    
+    public void inOrder()
+    {
+        inOrder(root);        
+    }
+    
+    private void inOrder(TreeNode rt)
+    {
+        if (rt != null)
+        {
+            inOrder(rt.left);
+            System.out.println(rt.data);
+            inOrder(rt.right);
+        }
+    }
+    
+    public int count()
+    {
+        return count(root);
+    }
+    
+    private int count(TreeNode rt)
+    {
+        if (rt == null)
+            return 0;
+        return count(rt.left) + count(rt.right) + 1;  // post-order traversal
+    }
+    
+    public boolean contains(AnyType value)
+    {
+        TreeNode curr = root;
+        while (curr != null)
+        {
+            if (value.compareTo(curr.data) == 0)
+                return true;
+            if (value.compareTo(curr.data) > 0)
+                curr = curr.right;
+            else
+                curr = curr.left;
+        }
+        return false;
+    }
+    
+    // prints tree top to bottom, right to left in a 90-degree rotated level view
+    public String toString()
+    {
+      //System.out.println(find("mark"));
+      System.out.println(root.right.left.wordList);
+      System.out.println(isBalanced(root));
+      System.out.println(height(root));
+        StringBuilder result = new StringBuilder();
+        return rotateHelper(result,root,-1).toString();
+    }
+    
+    private StringBuilder rotateHelper(StringBuilder result,
+                                       TreeNode rt, int level)
+    {
+        if (rt != null)
+        {
+            level++;
+            result = rotateHelper(result,rt.right,level);
+            for (int i=0; i < level; i++)
+                result.append("\t");
+            result.append(rt.data + "\n");
+            result = rotateHelper(result,rt.left,level);
+        }
+        return result;
+    }
+                
+    
+    /**
+     * the node class used by the Tree class
+     * a private inner class
+     */
+    private class TreeNode
+    {
+        private AnyType data;
+        private ArrayList<AnyType> wordList;
+        private TreeNode left, right;
+        
+        private TreeNode(AnyType data, TreeNode left, TreeNode right)
+        {
+            this.data = data;
+            this.left = left;
+            this.right = right;
+            this.wordList = new ArrayList<AnyType>();
+        }
+    }
+    
+    
+    public static void main(String[] args)
+    {
+        BST<String> fred = new BST<String>();
+        // try-catch blocks allow the programmer to determine
+        // how the program behaves when an exception is thrown
+        try
+        {
+            fred.add("Mark","aa");
+            fred.add("Mark","uhu");
+            fred.add("Mark","Noshin");
+            fred.add("Simone","bb");
+            fred.add("Maryam","cc");
+            fred.add("Maryam","nice");
+            fred.add("Maryam","sweet");
+            fred.add("Ahmed","dd");
+            fred.add("Small","ee");
+            fred.add("Zuhair","ff");
+            fred.add("Bob","gg");
+            fred.add("Tarek","hh");
+            fred.inOrder();
+            /*
+            fred.add("Mark");
+            System.out.println("asdasdds");  // NOTE: this is not printed, since the try is exited
+            fred.add("small");               // when the exception is first thrown on fred.add("Mark")
+            */
+        }
+        catch (Exception e)
+        {
+            System.out.println("BST ERROR: " + e);
+            //e.printStackTrace();
+        }
+        System.out.println("tree contains \"Tarek\"? " + fred.contains("Tarek"));
+        System.out.println("tree contains \"Small\"? " + fred.contains("Small"));
+        System.out.println("tree contains \"not here\"? " + fred.contains("not here"));
+        System.out.println(fred);
+    }
+    
+}
+
